@@ -7,6 +7,8 @@ import {
   refreshAccessToken,
   changePassword,
   updateRoleToAdmin,
+  forgotPassword,
+  resetPassword,
 } from "../controller/user.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyJwt, restrictUser } from "../middleware/auth.middleware.js";
@@ -25,5 +27,8 @@ router
 router
   .route("/updateRoleToAdmin/:userId")
   .post(verifyJwt, restrictUser("admin"), updateRoleToAdmin);
+
+router.route("/forgotPassword").post(forgotPassword);
+router.route("/resetPassword").patch(resetPassword);
 
 export default router;

@@ -5,6 +5,12 @@ import { ApiResponse } from "../utils/apiResponse.util.js";
 import { asyncHandler } from "../utils/asyncHandler.utils.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import jwt from "jsonwebtoken";
+import transport from "../utils/nodemailer.utils.js";
+
+const generateOtp = () => {
+  const otp = 100000 + Math.floor(Math.random() * 900000);
+  return otp;
+};
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -269,6 +275,67 @@ const changePassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedUser, "Password Updated Successfuylly"));
 });
 
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email || email.trim() === "") {
+    throw new ApiError(400, "email id is required");
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(400, `User is not found with ${email}`);
+  }
+
+  const otp = generateOtp();
+  user.otp = otp;
+  user.otpExpiration = Date.now() + 300000;
+  await user.save({ validateBeforeSave: false });
+
+  try {
+    await transport.sendMail({
+      to: email,
+      subject: "Password Reset",
+      html: `To reset the password otp is : ${otp}`,
+    });
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong while sending email");
+  }
+
+  return res.status(200).json(new ApiResponse(200, {}, "Otp is sent"));
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  const user = await User.findOne({ email, otp });
+  if (!user) {
+    throw new ApiError(400, "email or otp is invalid");
+  }
+  if (user.otpExpiration < Date.now()) {
+    throw new ApiError(401, "otp is expired");
+  }
+
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      $unset: {
+        otp: 1,
+        otpExpiration: 1,
+        refreshToken: 1,
+      },
+    },
+    { new: true }
+  ).select("-password -createdAt -updatedAt -__v -avatar");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "Password is successfully reset"));
+});
+
 export {
   registerUser,
   loginUser,
@@ -277,4 +344,6 @@ export {
   updateRoleToSeller,
   updateRoleToAdmin,
   changePassword,
+  forgotPassword,
+  resetPassword,
 };
