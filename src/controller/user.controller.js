@@ -258,7 +258,7 @@ const changePassword = asyncHandler(async (req, res) => {
 
   user.password = newPassword;
 
-  await user.save({ validateBeforeSave: true });
+  await user.save({ validateBeforeSave: false });
 
   const updatedUser = await User.findById(user._id).select(
     "-password -refreshToken"

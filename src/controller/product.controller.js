@@ -14,7 +14,7 @@ const getImageName = (url) => {
 };
 
 const getProductList = asyncHandler(async (req, res) => {
-  const productList = await Product.find();
+  const productList = await Product.find().select("-createdAt -updatedAt -__v");
 
   return res
     .status(200)
@@ -59,7 +59,9 @@ const addProduct = asyncHandler(async (req, res) => {
     owner: req.user._id,
   });
 
-  const savedProduct = await Product.findById(product._id);
+  const savedProduct = await Product.findById(product._id).select(
+    "-createdAt -updatedAt -__v"
+  );
   if (!savedProduct) {
     throw new ApiError(500, "Something went wrong while adding product");
   }
@@ -76,7 +78,9 @@ const getProduct = asyncHandler(async (req, res) => {
     throw new ApiError(400, "productId is missing");
   }
 
-  const product = await Product.findById(productId);
+  const product = await Product.findById(productId).select(
+    "-createdAt -updatedAt -__v"
+  );
   if (!product) {
     throw new ApiError(400, "Product does not exist with the product id");
   }
