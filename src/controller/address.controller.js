@@ -3,12 +3,22 @@ import { ApiError } from "../utils/apiError.utils.js";
 import { ApiResponse } from "../utils/apiResponse.util.js";
 import { asyncHandler } from "../utils/asyncHandler.utils.js";
 
+const isMobileNumberValid = (value) => {
+  return /^\+?(91-)?[789]\d{9}$/.test(value);
+};
+
 const addAddress = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   let { street, village, city, state, pincode, mobile, profile } = req.body;
 
   if (!street || !city || !state || !pincode || !mobile) {
     throw new ApiError(400, "Missing required fields");
+  }
+
+  const validMobileNumber = isMobileNumberValid(mobile);
+
+  if (!validMobileNumber) {
+    throw new ApiError(400, "Please enter a valid mobile number");
   }
 
   if (!profile) {
@@ -69,6 +79,13 @@ const updateAddress = asyncHandler(async (req, res) => {
   if (!profile) {
     throw new ApiError(400, "Address proflie is missing");
   }
+
+  const validMobileNumber = isMobileNumberValid(mobile);
+
+  if (!validMobileNumber) {
+    throw new ApiError(400, "Please enter a valid mobile number");
+  }
+
   const address = await Address.findOne({ addressHolder: userId, profile });
 
   if (street) {

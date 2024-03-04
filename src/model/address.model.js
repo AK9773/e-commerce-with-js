@@ -24,13 +24,6 @@ const AddressSchema = new Schema(
     mobile: {
       type: String,
       required: true,
-      validate: {
-        validator: function (v) {
-          return /^\+?(91)?[789]\d{9}$/.test(v);
-        },
-        message: (props) =>
-          `${props.value} is not a valid Indian mobile number!`,
-      },
     },
     addressHolder: {
       type: Schema.Types.ObjectId,
