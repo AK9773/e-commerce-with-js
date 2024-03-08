@@ -74,10 +74,6 @@ const addProduct = asyncHandler(async (req, res) => {
 const getProduct = asyncHandler(async (req, res) => {
   const productId = req.params.productId;
 
-  if (!productId) {
-    throw new ApiError(400, "productId is missing");
-  }
-
   const product = await Product.findById(productId).select(
     "-createdAt -updatedAt -__v"
   );
