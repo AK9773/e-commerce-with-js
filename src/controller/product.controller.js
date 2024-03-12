@@ -6,6 +6,7 @@ import {
   deleteFromCloudinary,
   uploadOnCloudinary,
 } from "../utils/cloudinary.utils.js";
+import ApiFeature from "../utils/apiFeature.utils.js";
 
 const getImageName = (url) => {
   const arrayOfUrl = url.split("/");
@@ -14,11 +15,30 @@ const getImageName = (url) => {
 };
 
 const getProductList = asyncHandler(async (req, res) => {
-  const productList = await Product.find().select("-createdAt -updatedAt -__v");
+  const resultPerPage = 10;
+  const totalProducts = await Product.countDocuments();
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, productList, "Product fetched Successfully"));
+  const page = Number(req.query.page) || 1;
+  const apiFeature = new ApiFeature(Product.find(), req.query)
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+
+  const productList = await apiFeature.query;
+  const visibleProducts = productList.length;
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        "Total Products": totalProducts,
+        "Visible Products": visibleProducts,
+        page,
+        productList,
+      },
+      "Products is fetched"
+    )
+  );
 });
 
 const addProduct = asyncHandler(async (req, res) => {
