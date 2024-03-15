@@ -42,7 +42,7 @@ const getProductList = asyncHandler(async (req, res) => {
 });
 
 const addProduct = asyncHandler(async (req, res) => {
-  const { name, price, color, category, description } = req.body;
+  const { name, price, category, description } = req.body;
 
   if (!name || !price) {
     throw new ApiError(400, "name and price are required");
@@ -71,7 +71,6 @@ const addProduct = asyncHandler(async (req, res) => {
   const product = await Product.create({
     name,
     price,
-    color,
     category,
     description,
     thumbnail: thumbnail.url,
@@ -117,7 +116,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
     );
   }
 
-  let { name, price, color, category, description } = req.body;
+  let { name, price, category, description } = req.body;
 
   if (!name) {
     name = product.name;
@@ -125,9 +124,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
   if (!price) {
     price = product.price;
   }
-  if (!color) {
-    color = product.color;
-  }
+
   if (!category) {
     category = product.category;
   }
@@ -141,7 +138,6 @@ const updateProductDetails = asyncHandler(async (req, res) => {
       $set: {
         name: name,
         price: price,
-        color: color,
         category: category,
         description: description,
       },

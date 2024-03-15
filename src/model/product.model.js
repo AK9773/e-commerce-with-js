@@ -10,9 +10,6 @@ const ProductSchema = new Schema(
       type: Number,
       required: true,
     },
-    color: {
-      type: String,
-    },
     category: {
       type: String,
     },

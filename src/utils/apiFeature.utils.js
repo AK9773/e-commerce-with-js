@@ -28,26 +28,28 @@ class ApiFeature {
     removeFields.forEach((element) => delete copyOfQueryElements[element]);
 
     const { lt, lte, gt, gte } = copyOfQueryElements;
-    const priceRange = {};
+    if (lt || lte || gt || gte) {
+      const priceRange = {};
 
-    if (lt) {
-      priceRange.$lt = parseInt(lt);
-      delete copyOfQueryElements.lt;
-    }
-    if (lte) {
-      priceRange.$lte = parseInt(lte);
-      delete copyOfQueryElements.lte;
-    }
-    if (gt) {
-      priceRange.$gt = parseInt(gt);
-      delete copyOfQueryElements.gt;
-    }
-    if (gte) {
-      priceRange.$gte = parseInt(gte);
-      delete copyOfQueryElements.gte;
-    }
+      if (lt) {
+        priceRange.$lt = parseInt(lt);
+        delete copyOfQueryElements.lt;
+      }
+      if (lte) {
+        priceRange.$lte = parseInt(lte);
+        delete copyOfQueryElements.lte;
+      }
+      if (gt) {
+        priceRange.$gt = parseInt(gt);
+        delete copyOfQueryElements.gt;
+      }
+      if (gte) {
+        priceRange.$gte = parseInt(gte);
+        delete copyOfQueryElements.gte;
+      }
 
-    copyOfQueryElements.price = { ...priceRange };
+      copyOfQueryElements.price = { ...priceRange };
+    }
 
     this.query = this.query.find(copyOfQueryElements);
     return this;
