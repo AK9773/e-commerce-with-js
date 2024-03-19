@@ -57,7 +57,7 @@ const addAddress = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, addressData, "address is saved"));
+    .json(new ApiResponse(200, addressData, "address is saved", "address"));
 });
 
 const getAddress = asyncHandler(async (req, res) => {
@@ -69,7 +69,14 @@ const getAddress = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, listOfAddress, "address fetched successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        listOfAddress,
+        "address fetched successfully",
+        "addresses"
+      )
+    );
 });
 
 const updateAddress = asyncHandler(async (req, res) => {
@@ -114,7 +121,14 @@ const updateAddress = asyncHandler(async (req, res) => {
   }).select("-createdAt -updatedAt -__v");
   return res
     .status(200)
-    .json(new ApiResponse(200, updatedAddress, "address updtaed successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        updatedAddress,
+        "address updtaed successfully",
+        "address"
+      )
+    );
 });
 
 const deleteAddress = asyncHandler(async (req, res) => {
@@ -133,7 +147,7 @@ const deleteAddress = asyncHandler(async (req, res) => {
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "address deleted successfully"));
+    .json(new ApiResponse(200, {}, "address deleted successfully", ""));
 });
 
 export { addAddress, getAddress, updateAddress, deleteAddress };

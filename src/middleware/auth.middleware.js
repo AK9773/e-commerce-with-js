@@ -30,12 +30,16 @@ const verifyJwt = asyncHandler(async (req, res, next) => {
   }
 });
 
-const restrictUser = (...role) => {
+const restrictUser = (...roles) => {
   return (req, res, next) => {
-    if (!role.includes(req.user.role)) {
-      throw new ApiError(401, "Unathorized to perform this task");
+    const userRole = req.user.role;
+    if (userRole === "admin") {
+      next();
+    } else if (!roles.includes(userRole)) {
+      throw new ApiError(401, "Unauthorized to perform this task");
+    } else {
+      next();
     }
-    next();
   };
 };
 

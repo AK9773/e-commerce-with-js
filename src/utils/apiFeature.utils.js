@@ -55,11 +55,12 @@ class ApiFeature {
     return this;
   }
 
-  pagination(resultPerPage) {
+  pagination() {
     const pageNumber = Number(this.queryElements.page) || 1;
-    const skip = resultPerPage * (pageNumber - 1);
+    const limit = Number(this.queryElements.limit) || 12;
+    const skip = limit * (pageNumber - 1);
 
-    this.query = this.query.limit(resultPerPage).skip(skip);
+    this.query = this.query.limit(limit).skip(skip);
     return this;
   }
 }

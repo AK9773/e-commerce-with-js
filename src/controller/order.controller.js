@@ -34,11 +34,18 @@ const addOrder = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(200, confirmOrder, "Order is placed successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        confirmOrder,
+        "Order is placed successfully",
+        "order"
+      )
+    );
 });
 
 const getOrderByUserId = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.params.userId;
 
   const listOfOrder = await Order.aggregate([
     {
@@ -103,7 +110,12 @@ const getOrderByUserId = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, listOfOrder, "Orders detail fetched successfully")
+      new ApiResponse(
+        200,
+        listOfOrder,
+        "Orders detail fetched successfully",
+        "orders"
+      )
     );
 });
 
@@ -119,7 +131,11 @@ const cancelOrder = asyncHandler(async (req, res) => {
   orderData.orderStatus = "cancelled";
   orderData.save({ validateBeforeSave: false });
 
-  return res.status(200).json(new ApiResponse(200, {}, "order cancelled"));
+  const updatedData = await Order.findById(orderId);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedData, "order cancelled", "order"));
 });
 
 const deliverOrder = asyncHandler(async (req, res) => {
@@ -135,7 +151,11 @@ const deliverOrder = asyncHandler(async (req, res) => {
   orderData.orderStatus = "delivered";
   orderData.save({ validateBeforeSave: false });
 
-  return res.status(200).json(new ApiResponse(200, {}, "order delivered"));
+  const updatedData = await Order.findById(orderId);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedData, "order delivered", "order"));
 });
 
 export { addOrder, getOrderByUserId, cancelOrder, deliverOrder };

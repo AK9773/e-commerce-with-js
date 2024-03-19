@@ -34,20 +34,20 @@ router.route("/addProduct").post(
 
 router
   .route("/updateProductDetails/:productId")
-  .patch(verifyJwt, restrictUser("seller", "admin"), updateProductDetails);
+  .patch(verifyJwt, restrictUser("seller"), updateProductDetails);
 
 router
   .route("/updateThumbnail/:productId")
   .patch(
     verifyJwt,
-    restrictUser("seller", "admin"),
+    restrictUser("seller"),
     upload.single("thumbnail"),
     updateProductThumbnail
   );
 
 router.route("/updateImages/:productId").patch(
   verifyJwt,
-  restrictUser("seller", "admin"),
+  restrictUser("seller"),
   upload.fields([
     {
       name: "images",
@@ -59,10 +59,10 @@ router.route("/updateImages/:productId").patch(
 
 router
   .route("/deleteProduct/:productId")
-  .delete(verifyJwt, restrictUser("seller", "admin"), deleteProduct);
+  .delete(verifyJwt, restrictUser("seller"), deleteProduct);
 
 router
   .route("/getProductListOfSeller")
-  .get(verifyJwt, restrictUser("seller", "admin"), getProductListOfSeller);
+  .get(verifyJwt, restrictUser("seller"), getProductListOfSeller);
 
 export default router;

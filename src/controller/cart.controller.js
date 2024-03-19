@@ -38,7 +38,12 @@ const addToCart = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(
-      new ApiResponse(200, savedCartItem, "Product added successfully to cart")
+      new ApiResponse(
+        200,
+        savedCartItem,
+        "Product added successfully to cart",
+        "cart"
+      )
     );
 });
 
@@ -77,11 +82,15 @@ const findByUserId = asyncHandler(async (req, res) => {
       },
     },
   ]);
-  console.log(listOfCartItems);
   return res
     .status(200)
     .json(
-      new ApiResponse(200, listOfCartItems, "Cart items fetched successfully")
+      new ApiResponse(
+        200,
+        listOfCartItems,
+        "Cart items fetched successfully",
+        "carts"
+      )
     );
 });
 
@@ -119,7 +128,12 @@ const updateProductQuantity = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, updatedCart, "Successfully updated the quantity")
+      new ApiResponse(
+        200,
+        updatedCart,
+        "Successfully updated the quantity",
+        "cart"
+      )
     );
 });
 
@@ -143,7 +157,7 @@ const deleteByCartId = asyncHandler(async (req, res) => {
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "cart item deleted successfully"));
+    .json(new ApiResponse(200, null, "cart item deleted successfully", ""));
 });
 
 export { addToCart, findByUserId, updateProductQuantity, deleteByCartId };

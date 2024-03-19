@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.route("/addOrder").post(verifyJwt, addOrder);
-router.route("/getAllOrderForUser").get(verifyJwt, getOrderByUserId);
+router.route("/getAllOrderForUser/:userId").get(verifyJwt, getOrderByUserId);
 router.route("/cancelOrder/:orderId").patch(verifyJwt, cancelOrder);
 router
   .route("/deliverOrder/:orderId")

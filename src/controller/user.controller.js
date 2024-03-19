@@ -82,7 +82,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(200, savedUser, "User Registered Successfully"));
+    .json(
+      new ApiResponse(200, savedUser, "User Registered Successfully", "user")
+    );
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -116,7 +118,9 @@ const loginUser = asyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, loggedInUser, "User logged in successfull"));
+    .json(
+      new ApiResponse(200, loggedInUser, "User logged in successfull", "user")
+    );
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -134,7 +138,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged out successful"));
+    .json(new ApiResponse(200, {}, "User logged out successful", ""));
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -174,7 +178,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             accessToken,
             refreshToken: newRefreshToken,
           },
-          "Access token refreshed"
+          "Access token refreshed",
+          "tokens"
         )
       );
   } catch (error) {
@@ -209,7 +214,7 @@ const updateRoleToSeller = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "User Role is updated to seller"));
+    .json(new ApiResponse(200, user, "User Role is updated to seller", "user"));
 });
 
 const updateRoleToAdmin = asyncHandler(async (req, res) => {
@@ -239,7 +244,7 @@ const updateRoleToAdmin = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "User Role is updated to seller"));
+    .json(new ApiResponse(200, user, "User Role is updated to admin", "user"));
 });
 
 const changePassword = asyncHandler(async (req, res) => {
@@ -272,7 +277,14 @@ const changePassword = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, updatedUser, "Password Updated Successfuylly"));
+    .json(
+      new ApiResponse(
+        200,
+        updatedUser,
+        "Password Updated Successfuylly",
+        "user"
+      )
+    );
 });
 
 const forgotPassword = asyncHandler(async (req, res) => {
@@ -333,7 +345,14 @@ const resetPassword = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, updatedUser, "Password is successfully reset"));
+    .json(
+      new ApiResponse(
+        200,
+        updatedUser,
+        "Password is successfully reset",
+        "user"
+      )
+    );
 });
 
 export {

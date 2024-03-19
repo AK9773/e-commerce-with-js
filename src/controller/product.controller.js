@@ -15,14 +15,13 @@ const getImageName = (url) => {
 };
 
 const getProductList = asyncHandler(async (req, res) => {
-  const resultPerPage = 10;
   const totalProducts = await Product.countDocuments();
 
   const page = Number(req.query.page) || 1;
   const apiFeature = new ApiFeature(Product.find(), req.query)
     .search()
     .filter()
-    .pagination(resultPerPage);
+    .pagination();
 
   const productList = await apiFeature.query;
   const visibleProducts = productList.length;
@@ -36,7 +35,8 @@ const getProductList = asyncHandler(async (req, res) => {
         page,
         productList,
       },
-      "Products is fetched"
+      "Products is fetched",
+      "products"
     )
   );
 });
@@ -87,7 +87,14 @@ const addProduct = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(201, savedProduct, "Product saved successfully"));
+    .json(
+      new ApiResponse(
+        201,
+        savedProduct,
+        "Product saved successfully",
+        "product"
+      )
+    );
 });
 
 const getProduct = asyncHandler(async (req, res) => {
@@ -102,7 +109,9 @@ const getProduct = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, product, "Product fetched successfully"));
+    .json(
+      new ApiResponse(200, product, "Product fetched successfully", "product")
+    );
 });
 
 const updateProductDetails = asyncHandler(async (req, res) => {
@@ -158,7 +167,8 @@ const updateProductDetails = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         updatedProduct,
-        "Product details updated successfully"
+        "Product details updated successfully",
+        "product"
       )
     );
 });
@@ -200,7 +210,9 @@ const updateProductThumbnail = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, updatedProduct, "Thumbnail is updated"));
+    .json(
+      new ApiResponse(200, updatedProduct, "Thumbnail is updated", "product")
+    );
 });
 
 const updateProductImages = asyncHandler(async (req, res) => {
@@ -255,7 +267,14 @@ const updateProductImages = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, updatedProduct, "Product updated successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        updatedProduct,
+        "Product updated successfully",
+        "product"
+      )
+    );
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
@@ -299,7 +318,9 @@ const getProductListOfSeller = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, productList, "Data fetched Successfully"));
+    .json(
+      new ApiResponse(200, productList, "Data fetched Successfully", "products")
+    );
 });
 
 export {
