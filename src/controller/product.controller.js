@@ -7,12 +7,7 @@ import {
   uploadOnCloudinary,
 } from "../utils/cloudinary.utils.js";
 import ApiFeature from "../utils/apiFeature.utils.js";
-
-const getImageName = (url) => {
-  const arrayOfUrl = url.split("/");
-  const imageName = arrayOfUrl[arrayOfUrl.length - 1].split(".")[0];
-  return imageName;
-};
+import getImageName from "../utils/getImageName.utils.js";
 
 const getProductList = asyncHandler(async (req, res) => {
   const totalProducts = await Product.countDocuments();
@@ -52,7 +47,10 @@ const addProduct = asyncHandler(async (req, res) => {
   if (!localThumbnailFilePath) {
     throw new ApiError(400, "Thumbnail is required");
   }
-  const thumbnail = await uploadOnCloudinary(localThumbnailFilePath);
+  const thumbnail = await uploadOnCloudinary(
+    localThumbnailFilePath,
+    "products"
+  );
 
   let localImagesFilePath = [];
   if (req.files && req.files.images) {
@@ -64,7 +62,7 @@ const addProduct = asyncHandler(async (req, res) => {
   let images = [];
   for (let index = 0; index < localImagesFilePath.length; index++) {
     const localImagePath = localImagesFilePath[index];
-    const image = await uploadOnCloudinary(localImagePath);
+    const image = await uploadOnCloudinary(localImagePath, "products");
     images.push(image?.url);
   }
 
@@ -189,14 +187,17 @@ const updateProductThumbnail = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Thumbnail is required");
   }
 
-  const thumbnail = await uploadOnCloudinary(localThumbanilFilePath);
+  const thumbnail = await uploadOnCloudinary(
+    localThumbanilFilePath,
+    "products"
+  );
   if (!thumbnail) {
     throw new ApiError(500, "Error in uploading thumbnail");
   }
 
   const imageName = getImageName(product.thumbnail);
 
-  await deleteFromCloudinary(imageName);
+  await deleteFromCloudinary(`products/${imageName}`);
 
   const updatedProduct = await Product.findByIdAndUpdate(
     productId,
@@ -233,7 +234,7 @@ const updateProductImages = asyncHandler(async (req, res) => {
   }
   let imageUrls = [];
   for (const localImagePath of localImageFilePaths) {
-    const image = await uploadOnCloudinary(localImagePath.path);
+    const image = await uploadOnCloudinary(localImagePath.path, "products");
     if (!image) {
       throw new ApiError(500, "Error in uploading image");
     }
@@ -244,7 +245,7 @@ const updateProductImages = asyncHandler(async (req, res) => {
   if (imagesUrl.length > 0) {
     for (const imageUrl of imagesUrl) {
       const imageName = getImageName(imageUrl);
-      await deleteFromCloudinary(imageName);
+      await deleteFromCloudinary(`products/${imageName}`);
     }
   }
 
@@ -290,6 +291,16 @@ const deleteProduct = asyncHandler(async (req, res) => {
       400,
       `Product does not exist with product id : ${productId}`
     );
+  }
+
+  const images = [product.thumbnail];
+  for (const image of product?.images) {
+    images.push(image);
+  }
+
+  for (const image of images) {
+    const imageName = getImageName(image);
+    await deleteFromCloudinary(`products/${imageName}`);
   }
 
   await Product.findByIdAndDelete(productId);

@@ -6,6 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.utils.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import jwt from "jsonwebtoken";
 import transport from "../utils/nodemailer.utils.js";
+import getImageName from "../utils/getImageName.utils.js";
 
 const generateOtp = () => {
   const otp = 100000 + Math.floor(Math.random() * 900000);
@@ -59,7 +60,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avatar file is missing");
   }
 
-  let avatar = await uploadOnCloudinary(avatarLocalFilePath);
+  let avatar = await uploadOnCloudinary(avatarLocalFilePath, "users");
 
   if (!avatar) {
     throw new ApiError(500, "Something went wrong while uploading avatar");
@@ -355,6 +356,103 @@ const resetPassword = asyncHandler(async (req, res) => {
     );
 });
 
+const updateAvatar = asyncHandler(async (req, res) => {
+  let userId;
+  if (req.user.role === "admin") {
+    userId = req.body.userId;
+  } else {
+    userId = req.user._id;
+  }
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ApiError(400, `User does not exist with userId: ${userId}`);
+  }
+
+  const localAvatarFilePath = req.file?.path;
+
+  if (!localAvatarFilePath) {
+    throw new ApiError(400, "Avatar is required");
+  }
+
+  const avatar = await uploadOnCloudinary(localAvatarFilePath, "users");
+  if (!avatar) {
+    throw new ApiError(500, "Error in uploading avatar");
+  }
+
+  const imageName = getImageName(user.avatar);
+
+  await deleteFromCloudinary(`users/${imageName}`);
+
+  const updatedUser = await Product.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        avatar: avatar.url,
+      },
+    },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "Avatar is updated", "user"));
+});
+
+const updateUserDetails = asyncHandler(async (req, res) => {
+  let userId;
+  if (req.user.role === "admin") {
+    userId = req.body.userId;
+  } else {
+    userId = req.user._id;
+  }
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ApiError(400, `User does not exist with userId: ${userId}`);
+  }
+
+  let { username, fullName, email } = req.body;
+
+  if (!username) {
+    username = user.username;
+  }
+  if (!fullName) {
+    fullName = user.fullName;
+  }
+
+  if (!email) {
+    email = user.email;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        username,
+        fullName,
+        email,
+      },
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    throw new ApiError(500, "Something went wrong while updating User details");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedUser,
+        "User details updated successfully",
+        "user"
+      )
+    );
+});
+
 export {
   registerUser,
   loginUser,
@@ -365,4 +463,6 @@ export {
   changePassword,
   forgotPassword,
   resetPassword,
+  updateAvatar,
+  updateUserDetails,
 };

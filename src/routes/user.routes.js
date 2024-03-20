@@ -9,6 +9,8 @@ import {
   updateRoleToAdmin,
   forgotPassword,
   resetPassword,
+  updateAvatar,
+  updateUserDetails,
 } from "../controller/user.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyJwt, restrictUser } from "../middleware/auth.middleware.js";
@@ -30,5 +32,11 @@ router
 
 router.route("/forgotPassword").post(forgotPassword);
 router.route("/resetPassword").patch(resetPassword);
+
+router
+  .route("/updateAvatar")
+  .patch(verifyJwt, upload.single("avatar"), updateAvatar);
+
+router.route("/updateUserDetails").patch(verifyJwt, updateUserDetails);
 
 export default router;
