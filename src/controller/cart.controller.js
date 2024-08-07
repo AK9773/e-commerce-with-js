@@ -3,7 +3,7 @@ import { Product } from "../model/product.model.js";
 import { asyncHandler } from "../utils/asyncHandler.utils.js";
 import { ApiError } from "../utils/apiError.utils.js";
 import { ApiResponse } from "../utils/apiResponse.util.js";
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 
 const addToCart = asyncHandler(async (req, res) => {
   const userId = req.user._id;
@@ -47,6 +47,35 @@ const addToCart = asyncHandler(async (req, res) => {
     );
 });
 
+const insertManyToCart = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  let arrayOfProduct = req.body;
+
+  for (const item of arrayOfProduct) {
+    item.buyer = userId;
+    item.product = item._id;
+    if (!item.quantity) {
+      item.quantity = 1;
+    }
+  }
+
+  for (const item of arrayOfProduct) {
+    const existInCart = await Cart.find({
+      product: item.product,
+      buyer: userId,
+    });
+    if (!existInCart.length) {
+      await Cart.create(item);
+    }
+  }
+
+  return res
+    .status(201)
+    .json(
+      new ApiResponse(200, null, "Product added successfully to cart", "carts")
+    );
+});
+
 const findByUserId = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
@@ -75,6 +104,7 @@ const findByUserId = asyncHandler(async (req, res) => {
       $project: {
         buyer: 1,
         quantity: 1,
+        "productDetails._id": 1,
         "productDetails.name": 1,
         "productDetails.owner": 1,
         "productDetails.thumbnail": 1,
@@ -100,7 +130,6 @@ const updateProductQuantity = asyncHandler(async (req, res) => {
   if (!quantity) {
     throw new ApiError(400, "Quantity is required");
   }
-
   if (!cartId) {
     throw new ApiError(400, "cartId is required");
   }
@@ -160,4 +189,10 @@ const deleteByCartId = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "cart item deleted successfully", ""));
 });
 
-export { addToCart, findByUserId, updateProductQuantity, deleteByCartId };
+export {
+  addToCart,
+  findByUserId,
+  updateProductQuantity,
+  deleteByCartId,
+  insertManyToCart,
+};
