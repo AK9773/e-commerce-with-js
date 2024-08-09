@@ -1,0 +1,37 @@
+version: '3'
+
+
+services:
+  mongo_db:
+    container_name: my-mongo-db
+    image: mongo:7.0
+    restart: always
+    ports:
+      - 4000:27017
+    volumes:
+      - mongo_db:/data/db
+
+
+  app:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo_db:27017
+      MONGODB_NAME: e-commerce
+      CORS_ORIGIN: http://localhost:5173
+      CLOUDINARY_CLOUD_NAME: 
+      CLOUDINARY_API_KEY: 
+      CLOUDINARY_API_SECRET: 
+      ACCESS_TOKEN_SECRET: 
+      ACCESS_TOKEN_EXPIRY: 2h
+      REFRESH_TOKEN_SECRET: 
+      REFRESH_TOKEN_EXPIRY: 10d
+      EMAIL: 
+      PASSWORD:
+    depends_on:
+      - mongo_db
+
+volumes:
+  mongo_db: {}
