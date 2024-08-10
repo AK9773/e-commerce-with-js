@@ -3,7 +3,7 @@ import { User } from "../model/user.model.js";
 import { ApiError } from "../utils/apiError.utils.js";
 import { ApiResponse } from "../utils/apiResponse.util.js";
 import { asyncHandler } from "../utils/asyncHandler.utils.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
+import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import jwt from "jsonwebtoken";
 import transport from "../utils/nodemailer.utils.js";
 import getImageName from "../utils/getImageName.utils.js";
@@ -391,7 +391,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
 
   await deleteFromCloudinary(`users/${imageName}`);
 
-  const updatedUser = await Product.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     userId,
     {
       $set: {
@@ -399,7 +399,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
       },
     },
     { new: true }
-  );
+  ).select("-refreshToken -password -__v");
 
   return res
     .status(200)
@@ -442,7 +442,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
       },
     },
     { new: true }
-  );
+  ).select("-refreshToken -password -__v");
 
   if (!updatedUser) {
     throw new ApiError(500, "Something went wrong while updating User details");
