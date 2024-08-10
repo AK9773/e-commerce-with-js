@@ -293,3 +293,262 @@ Response: {
     }
 }
 ```
+
+### Product APIs
+
+1. Get Product List
+
+```javascript
+API: http://localhost:3000/api/v1/products/getProductList
+Method: GET
+Response: {
+    "statusCode": 200,
+    "message": "Products is fetched",
+    "success": true,
+    "products": {
+        "Total Products": 2,
+        "Visible Products": 2,
+        "page": 1,
+        "productList": [
+            {
+                "_id": "66b35b299a4035e0c2bccd5a",
+                "name": "laptop",
+                "price": 60000,
+                "category": "Electronics",
+                "description": "best",
+                "owner": "65fa6abfa42ae2b3d7d7176e",
+                "thumbnail": thumbnailUrl,
+                "images": [
+                    url1,
+                    url2,
+                    url3,
+                    url4
+                ]
+            },
+            {
+                "_id": "66b35b679a4035e0c2bccd70",
+                "name": "laptop",
+                "price": 60000,
+                "category": "Electronics",
+                "description": "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip",
+                "owner": "65fa6abfa42ae2b3d7d7176e",
+                "thumbnail": thumbnailUrl,
+                "images": [
+                    url1,
+                    url2,
+                    url3,
+                    url4
+                ]
+            }
+        ]
+    }
+}
+
+```
+
+2. Get Product by Product id
+
+```javascript
+API: http://localhost:3000/api/v1/products/getProduct/{productId}
+Method: GET
+Response: {
+    "statusCode": 200,
+    "message": "Product fetched successfully",
+    "success": true,
+    "product": {
+        "_id": "66b35b299a4035e0c2bccd5a",
+        "name": "laptop",
+        "price": 60000,
+        "category": "Electronics",
+        "description": "best",
+        "owner": "65fa6abfa42ae2b3d7d7176e",
+        "thumbnail": thumbnailUrl,
+        "images": [
+                    url1,
+                    url2,
+                    url3,
+                    url4
+                ]
+    }
+}
+
+```
+
+3. Add Product
+   > Note: This API can be accessed only if user's role is admin or seller.
+
+```javascript
+API: http://localhost:3000/api/v1/products/addProduct
+Method: POST
+Formdata:{
+    "name": "mobile2",
+    "price": 10001,
+    "category": "mobile",
+    "description": "best mobile",
+    thumbnail:File,
+    images: File[]
+    }
+Response: {
+    "statusCode": 201,
+    "message": "Product saved successfully",
+    "success": true,
+    "product": {
+        "_id": "66b6dc446d298b9ed505fa7e",
+        "name": "mobile2",
+        "price": 10001,
+        "category": "mobile",
+        "description": "best mobile",
+        "owner": "66b61aa4eb885ee68094f920",
+        "thumbnail": thumbnailUrl,
+        "images": [
+                    url1,
+                    url2,
+                    url3,
+                    url4
+                ]
+    }
+}
+
+```
+
+4. Update Product Details
+   > Note: This API can be accessed only if user's role is admin or seller.
+
+```javascript
+API: http://localhost:3000/api/v1/products/updateProductDetails/{productId}
+Method: PATCH
+Payload:{
+    "name":"mobile",
+    "price":10001,
+    "category":"electronics",
+    "description":"Best to buy."
+}
+Response: {
+    "statusCode": 200,
+    "message": "Product details updated successfully",
+    "success": true,
+    "product": {
+        "_id": "66b6dc446d298b9ed505fa7e",
+        "name": "mobile",
+        "price": 10001,
+        "category": "electronics",
+        "description": "Best to buy.",
+        "owner": "66b61aa4eb885ee68094f920",
+        "thumbnail": thumbnailUrl,
+        "images": [
+                    url1,
+                    url2,
+                    url3,
+                    url4
+                ],
+        "createdAt": "2024-08-10T03:19:32.807Z",
+        "updatedAt": "2024-08-10T03:25:14.453Z",
+        "__v": 0
+    }
+}
+
+```
+
+5. Update Product Thumbanail
+   > Note: This API can be accessed only if user's role is admin or seller.
+
+```javascript
+API: http://localhost:3000/api/v1/products/updateThumbnail/{productId}
+Method: PATCH
+Formdata:{"thumbanail": file}
+Response: {
+    "statusCode": 200,
+    "message": "Thumbnail is updated",
+    "success": true,
+    "product": {
+        "_id": "66b6dc446d298b9ed505fa7e",
+        "name": "mobile",
+        "price": 10001,
+        "category": "electronics",
+        "description": "Best to buy.",
+        "owner": "66b61aa4eb885ee68094f920",
+        "thumbnail": thumbnailUrl,
+        "images": [
+                    url1,
+                    url2,
+                    url3,
+                    url4
+                ],
+        "createdAt": "2024-08-10T03:19:32.807Z",
+        "updatedAt": "2024-08-10T03:29:48.232Z",
+        "__v": 0
+    }
+}
+
+```
+
+6. Update Product Images
+   > Note: This API can be accessed only if user's role is admin or seller.
+
+```javascript
+API: http://localhost:3000/api/v1/products/updateImages/{productId}
+Method: PATCH
+Formdata:{"images": file[]}
+Response:{
+    "statusCode": 200,
+    "message": "Product updated successfully",
+    "success": true,
+    "product": {
+        "_id": "66b6dc446d298b9ed505fa7e",
+        "name": "mobile",
+        "price": 10001,
+        "category": "electronics",
+        "description": "Best to buy.",
+        "owner": "66b61aa4eb885ee68094f920",
+        "thumbnail": thumbnailUrl,
+        "images": [
+                    url1,
+                    url2,
+                    url3,
+                ],
+        "createdAt": "2024-08-10T03:19:32.807Z",
+        "updatedAt": "2024-08-10T03:31:59.274Z",
+        "__v": 0
+    }
+}
+
+```
+
+7. Delete Product
+   > Note: This API can be accessed only if user's role is admin or seller.
+
+```javascript
+API: http://localhost:3000/api/v1/products/deleteProduct/{productId}
+Method: DELETE
+Response:{
+    "statusCode": 200,
+    "message": "Product Deleted Succeessfully",
+    "success": true,
+    "data": null
+}
+
+```
+
+8. Get Product List of a Seller
+   > Note: This API can be accessed only if user's role is admin or seller.
+
+```javascript
+API: http://localhost:3000/api/v1/products/getProductListOfSeller
+Method: GET
+Payload:
+Response:{
+    "statusCode": 200,
+    "message": "Data fetched Successfully",
+    "success": true,
+    "products": [
+        {
+            "_id": "66b6dc446d298b9ed505fa7e",
+            "name": "mobile",
+            "price": 10001,
+            "category": "electronics",
+            "thumbnail": thumnailUrl
+        }
+    ]
+}
+
+```
