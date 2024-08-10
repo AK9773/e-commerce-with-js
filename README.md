@@ -14,7 +14,9 @@ To deploy the application using Docker please follow below steps:
 4. Paste your credentials in docker-compose.yml file in CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
 5. Add Access token secret and Refresh token secret in docker-compose.yml
 6. For nodemailer credentials, please login to Gmail => Manage your Google Account => Search App Passwords in search box => Create App Password => copy App Password
-7. In environment veriable in docker-compose.yml, paste the app password in "PASSWORD" and email id in "EMAIL"
+7. In environment veriable in docker-compose.yml, paste the app password in "PASSWORD" and email id in EMAIL"
+8. Run below command
+   > docker compose up -d
 
 ## API Documentation
 
@@ -535,7 +537,6 @@ Response:{
 ```javascript
 API: http://localhost:3000/api/v1/products/getProductListOfSeller
 Method: GET
-Payload:
 Response:{
     "statusCode": 200,
     "message": "Data fetched Successfully",
