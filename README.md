@@ -296,6 +296,8 @@ Response: {
 }
 ```
 
+---
+
 ### Product APIs
 
 1. Get Product List
